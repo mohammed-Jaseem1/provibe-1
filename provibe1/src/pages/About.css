@@ -1,0 +1,152 @@
+.about-page {
+  padding-top: 120px;
+  min-height: 100vh;
+  background: var(--color-bg);
+  position: relative;
+  z-index: 5;
+}
+
+.about-header h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+}
+
+.about-header h3 {
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  color: #fff;
+  font-weight: 700;
+}
+
+.about-header p {
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.about-header p strong {
+  color: #fff;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 2rem;
+}
+
+.about-card {
+  background: rgba(18, 24, 18, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 2rem;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.about-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(57, 255, 20, 0.2);
+}
+
+.about-card h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.about-card p {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.about-card p strong {
+  color: #fff;
+}
+
+.about-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+  text-align: left;
+}
+
+.about-list li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.about-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: bold;
+}
+
+.tagline-bold {
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 1px;
+  background: linear-gradient(to right, #fff, var(--color-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 768px) {
+  .about-page {
+    padding-top: 90px;
+  }
+
+  .about-header h2 {
+    font-size: clamp(1.8rem, 6vw, 3rem);
+  }
+
+  .about-header h3 {
+    font-size: clamp(1rem, 3vw, 1.4rem);
+  }
+
+  .about-header p {
+    font-size: 0.95rem;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .about-card {
+    padding: 1.5rem;
+  }
+
+  .about-card h3 {
+    font-size: 1.2rem;
+  }
+
+  .about-card p {
+    font-size: 0.88rem;
+  }
+
+  .mb-12 {
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-page {
+    padding-top: 80px;
+  }
+
+  .about-header h2 {
+    font-size: clamp(1.5rem, 7vw, 2.2rem);
+  }
+
+  .about-header h3 {
+    font-size: 1rem;
+  }
+
+  .about-card {
+    padding: 1.25rem;
+  }
+}

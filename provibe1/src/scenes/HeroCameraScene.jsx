@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import machineImg from '../assets/shaker.png'; // User's actual ProVibe vending machine visual
@@ -25,30 +25,32 @@ const HeroCameraScene = () => {
   const shakerCalloutRef = useRef(null);
 
   useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      // 1. Subtle idle floating animation when near the top
-      const idleFloat = gsap.to(machineImgRef.current, {
-        y: -12,
-        rotateX: '+=1.5',
-        rotateY: '+=1.5',
-        duration: 3,
-        yoyo: true,
-        repeat: -1,
-        ease: 'sine.inOut'
-      });
+    const mm = gsap.matchMedia();
 
-      const isMobile = window.innerWidth <= 768;
+    // 1. Subtle idle floating animation when near the top
+    const idleFloat = gsap.to(machineImgRef.current, {
+      y: -12,
+      rotateX: '+=1.5',
+      rotateY: '+=1.5',
+      duration: 3,
+      yoyo: true,
+      repeat: -1,
+      ease: 'sine.inOut'
+    });
 
-      // 2. Cinematic Camera Scroll Timeline
-      const heroTrack = document.getElementById('hero-camera-track');
+    const heroTrack = document.getElementById('hero-camera-track') || '#hero-camera-track';
+
+    // ========================================================
+    // DESKTOP & TABLET LANDSCAPE TIMELINE (min-width: 769px)
+    // ========================================================
+    mm.add('(min-width: 769px)', () => {
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: heroTrack || '#hero-camera-track',
+          trigger: heroTrack,
           start: 'top top',
           end: 'bottom bottom',
-          scrub: 1.2, // Silk-smooth damping with Lenis
+          scrub: 1.2,
           onUpdate: (self) => {
-            // Smoothly suspend idle float as scroll engages
             if (self.progress > 0.02) {
               if (idleFloat.isActive()) idleFloat.pause();
             } else {
@@ -58,13 +60,13 @@ const HeroCameraScene = () => {
         }
       });
 
-      // Set initial balanced composition states
+      // Initial balanced desktop state
       gsap.set(machineStageRef.current, {
-        scale: isMobile ? 0.75 : 0.88,
-        x: isMobile ? '0vw' : '16vw', // Beautifully balanced against hero copy on desktop
-        y: isMobile ? '10vh' : '2vh',
+        scale: 0.88,
+        x: '16vw',
+        y: '2vh',
         rotateX: 2,
-        rotateY: isMobile ? 0 : -6,
+        rotateY: -6,
         rotateZ: 0,
         opacity: 1,
         transformOrigin: '50% 50%'
@@ -73,20 +75,18 @@ const HeroCameraScene = () => {
       gsap.set(shakerStageRef.current, {
         opacity: 0,
         scale: 0.45,
-        x: isMobile ? '0vw' : '22vw',
+        x: '22vw',
         y: '18vh',
         rotateZ: -16,
         rotateY: 20,
         transformOrigin: '50% 50%'
       });
 
-      // ========================================================
-      // STAGE 1: Full Overview -> PUSH-IN TO 4K SMART DISPLAY
-      // ========================================================
+      // STAGE 1: Push into 4K Display
       tl.to(machineStageRef.current, {
-        scale: isMobile ? 1.45 : 1.7,
-        x: isMobile ? '0vw' : '-5vw',
-        y: isMobile ? '16vh' : '24vh',
+        scale: 1.7,
+        x: '-5vw',
+        y: '24vh',
         rotateX: 4,
         rotateY: -2,
         duration: 2.5,
@@ -104,9 +104,7 @@ const HeroCameraScene = () => {
           ease: 'power1.out'
         }, 1.0);
 
-      // ========================================================
-      // STAGE 2: 4K DISPLAY -> CONTACTLESS PAYMENT UNIT
-      // ========================================================
+      // STAGE 2: Contactless Payment Unit
       tl.to(displayCalloutRef.current, {
         opacity: 0,
         y: -16,
@@ -119,9 +117,9 @@ const HeroCameraScene = () => {
           ease: 'power1.out'
         }, 2.8)
         .to(machineStageRef.current, {
-          scale: isMobile ? 1.55 : 1.8,
-          x: isMobile ? '0vw' : '4vw',
-          y: isMobile ? '8vh' : '10vh',
+          scale: 1.8,
+          x: '4vw',
+          y: '10vh',
           rotateX: 2,
           rotateY: 3,
           duration: 2.4,
@@ -134,9 +132,7 @@ const HeroCameraScene = () => {
           ease: 'power1.out'
         }, 3.6);
 
-      // ========================================================
-      // STAGE 3: PAYMENT -> AUTOMATED DISPENSING BAY
-      // ========================================================
+      // STAGE 3: Dispensing Bay
       tl.to(paymentCalloutRef.current, {
         opacity: 0,
         y: -16,
@@ -144,9 +140,9 @@ const HeroCameraScene = () => {
         ease: 'power1.in'
       }, 5.4)
         .to(machineStageRef.current, {
-          scale: isMobile ? 1.65 : 1.9,
-          x: isMobile ? '0vw' : '-2vw',
-          y: isMobile ? '-14vh' : '-18vh',
+          scale: 1.9,
+          x: '-2vw',
+          y: '-18vh',
           rotateX: -2,
           rotateY: 2,
           duration: 2.4,
@@ -165,9 +161,7 @@ const HeroCameraScene = () => {
           ease: 'power1.out'
         }, 6.2);
 
-      // ========================================================
-      // STAGE 4: DISPENSER -> SIGNATURE SHAKER REVEAL
-      // ========================================================
+      // STAGE 4: Shaker Reveal
       tl.to(dispenserCalloutRef.current, {
         opacity: 0,
         y: -16,
@@ -179,11 +173,10 @@ const HeroCameraScene = () => {
           duration: 1.2,
           ease: 'power1.out'
         }, 8.0)
-        // Machine gently recedes with subtle depth blur
         .to(machineStageRef.current, {
-          scale: isMobile ? 0.72 : 0.82,
-          x: isMobile ? '0vw' : '-16vw',
-          y: isMobile ? '-8vh' : '0vh',
+          scale: 0.82,
+          x: '-16vw',
+          y: '0vh',
           opacity: 0.4,
           filter: 'blur(5px) brightness(0.65)',
           rotateX: 2,
@@ -191,12 +184,11 @@ const HeroCameraScene = () => {
           duration: 2.4,
           ease: 'power1.inOut'
         }, 8.0)
-        // Shaker emerges dynamically into heroic focus
         .to(shakerStageRef.current, {
           opacity: 1,
-          scale: isMobile ? 0.95 : 1.12,
-          x: isMobile ? '0vw' : '8vw',
-          y: isMobile ? '6vh' : '0vh',
+          scale: 1.12,
+          x: '8vw',
+          y: '0vh',
           rotateZ: 6,
           rotateY: -8,
           duration: 2.4,
@@ -209,20 +201,17 @@ const HeroCameraScene = () => {
           ease: 'power1.out'
         }, 8.8);
 
-      // ========================================================
-      // STAGE 5: GRAND FINALE -> DUAL MACHINE & SHAKER LOCKUP
-      // ========================================================
+      // STAGE 5: Dual Lockup
       tl.to(shakerCalloutRef.current, {
         opacity: 0,
         y: -16,
         duration: 0.8,
         ease: 'power1.in'
       }, 10.6)
-        // Machine returns to razor-sharp focus on the left
         .to(machineStageRef.current, {
-          scale: isMobile ? 0.72 : 0.92,
-          x: isMobile ? '-20vw' : '-18vw',
-          y: isMobile ? '4vh' : '2vh',
+          scale: 0.92,
+          x: '-18vw',
+          y: '2vh',
           opacity: 1,
           filter: 'blur(0px) brightness(1)',
           rotateX: 2,
@@ -230,36 +219,223 @@ const HeroCameraScene = () => {
           duration: 2.4,
           ease: 'power1.inOut'
         }, 10.6)
-        // Shaker settles in heroic balance on the right
         .to(shakerStageRef.current, {
-          scale: isMobile ? 0.75 : 0.88,
-          x: isMobile ? '20vw' : '18vw',
-          y: isMobile ? '6vh' : '4vh',
+          scale: 0.88,
+          x: '18vw',
+          y: '4vh',
           opacity: 1,
           rotateZ: 8,
           rotateY: -10,
           duration: 2.4,
           ease: 'power1.inOut'
         }, 10.6);
+    });
 
-      // Fade out viewport when entering products section
-      const productsSection = document.getElementById('products');
-      gsap.to(viewportRef.current, {
-        opacity: 0,
-        pointerEvents: 'none',
+    // ========================================================
+    // MOBILE & TABLET PORTRAIT TIMELINE (max-width: 768px)
+    // ========================================================
+    mm.add('(max-width: 768px)', () => {
+      const tlMobile = gsap.timeline({
         scrollTrigger: {
-          trigger: productsSection || '#products',
-          start: 'top 85%',
-          end: 'top 30%',
-          scrub: true,
+          trigger: heroTrack,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 1.1,
+          onUpdate: (self) => {
+            if (self.progress > 0.02) {
+              if (idleFloat.isActive()) idleFloat.pause();
+            } else {
+              if (idleFloat.paused()) idleFloat.play();
+            }
+          }
         }
       });
 
-      // Recalculate trigger coordinates accurately
-      ScrollTrigger.refresh();
+      // Mobile initial state: Centered machine lower down to let hero text breathe
+      gsap.set(machineStageRef.current, {
+        scale: 0.55,
+        x: '0vw',
+        y: '22vh',
+        rotateX: 2,
+        rotateY: 0,
+        rotateZ: 0,
+        opacity: 1,
+        transformOrigin: '50% 50%'
+      });
+
+      gsap.set(shakerStageRef.current, {
+        opacity: 0,
+        scale: 0.4,
+        x: '0vw',
+        y: '16vh',
+        rotateZ: -12,
+        rotateY: 15,
+        transformOrigin: '50% 50%'
+      });
+
+      // MOBILE STAGE 1: Zoom in on 4K Touchscreen
+      tlMobile.to(machineStageRef.current, {
+        scale: 1.3,
+        x: '0vw',
+        y: '20vh',
+        rotateX: 3,
+        rotateY: -1,
+        duration: 2.5,
+        ease: 'power1.inOut'
+      }, 0)
+        .to(screenLightRef.current, {
+          opacity: 0.8,
+          duration: 1.8,
+          ease: 'power1.inOut'
+        }, 0.6)
+        .to(displayCalloutRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 1.2,
+          ease: 'power1.out'
+        }, 1.0);
+
+      // MOBILE STAGE 2: Contactless Payment Terminal
+      tlMobile.to(displayCalloutRef.current, {
+        opacity: 0,
+        y: -14,
+        duration: 0.8,
+        ease: 'power1.in'
+      }, 2.8)
+        .to(screenLightRef.current, {
+          opacity: 0.2,
+          duration: 1.2,
+          ease: 'power1.out'
+        }, 2.8)
+        .to(machineStageRef.current, {
+          scale: 1.4,
+          x: '-3vw',
+          y: '8vh',
+          rotateX: 2,
+          rotateY: 2,
+          duration: 2.4,
+          ease: 'power1.inOut'
+        }, 2.8)
+        .to(paymentCalloutRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 1.2,
+          ease: 'power1.out'
+        }, 3.6);
+
+      // MOBILE STAGE 3: Dispensing Bay (Callout positioned at top on mobile)
+      tlMobile.to(paymentCalloutRef.current, {
+        opacity: 0,
+        y: -14,
+        duration: 0.8,
+        ease: 'power1.in'
+      }, 5.4)
+        .to(machineStageRef.current, {
+          scale: 1.4,
+          x: '0vw',
+          y: '-14vh',
+          rotateX: -2,
+          rotateY: 0,
+          duration: 2.4,
+          ease: 'power1.inOut'
+        }, 5.4)
+        .to(dispenserLightRef.current, {
+          opacity: 0.9,
+          scale: 1.1,
+          duration: 1.6,
+          ease: 'power1.out'
+        }, 5.8)
+        .to(dispenserCalloutRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 1.2,
+          ease: 'power1.out'
+        }, 6.2);
+
+      // MOBILE STAGE 4: Shaker Emerges in Center
+      tlMobile.to(dispenserCalloutRef.current, {
+        opacity: 0,
+        y: -14,
+        duration: 0.8,
+        ease: 'power1.in'
+      }, 8.0)
+        .to(dispenserLightRef.current, {
+          opacity: 0.15,
+          duration: 1.2,
+          ease: 'power1.out'
+        }, 8.0)
+        .to(machineStageRef.current, {
+          scale: 0.52,
+          x: '0vw',
+          y: '-8vh',
+          opacity: 0.28,
+          filter: 'blur(4px) brightness(0.65)',
+          duration: 2.4,
+          ease: 'power1.inOut'
+        }, 8.0)
+        .to(shakerStageRef.current, {
+          opacity: 1,
+          scale: 0.92,
+          x: '0vw',
+          y: '2vh',
+          rotateZ: 4,
+          rotateY: -6,
+          duration: 2.4,
+          ease: 'power1.out'
+        }, 8.2)
+        .to(shakerCalloutRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 1.2,
+          ease: 'power1.out'
+        }, 8.8);
+
+      // MOBILE STAGE 5: Dual Lockup - Balanced on phone screen
+      tlMobile.to(shakerCalloutRef.current, {
+        opacity: 0,
+        y: -14,
+        duration: 0.8,
+        ease: 'power1.in'
+      }, 10.6)
+        .to(machineStageRef.current, {
+          scale: 0.58,
+          x: '-18vw',
+          y: '2vh',
+          opacity: 1,
+          filter: 'blur(0px) brightness(1)',
+          duration: 2.4,
+          ease: 'power1.inOut'
+        }, 10.6)
+        .to(shakerStageRef.current, {
+          scale: 0.65,
+          x: '18vw',
+          y: '4vh',
+          opacity: 1,
+          rotateZ: 6,
+          duration: 2.4,
+          ease: 'power1.inOut'
+        }, 10.6);
     });
 
-    return () => ctx.revert();
+    // Fade out viewport when entering products section
+    const productsSection = document.getElementById('products') || '#products';
+    gsap.to(viewportRef.current, {
+      opacity: 0,
+      pointerEvents: 'none',
+      scrollTrigger: {
+        trigger: productsSection,
+        start: 'top 85%',
+        end: 'top 30%',
+        scrub: true,
+      }
+    });
+
+    ScrollTrigger.refresh();
+
+    return () => {
+      idleFloat.kill();
+      mm.revert();
+    };
   }, []);
 
   return (
@@ -326,7 +502,7 @@ const HeroCameraScene = () => {
             <span className="hud-ping-dot" />
             03 // PRECISION DISPENSE
           </span>
-          <div className="hud-title">ACTIVE CHILLED BLEND</div>
+          <div className="hud-title">ACTIVE BLEND</div>
           <div className="hud-desc">Automated hygiene-sealed dispense bay ready in under 30 seconds.</div>
         </div>
 

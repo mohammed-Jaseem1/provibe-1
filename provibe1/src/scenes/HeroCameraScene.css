@@ -8,6 +8,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   z-index: 2;
   pointer-events: none;
   overflow: hidden;
@@ -301,40 +302,90 @@
 }
 
 @media (max-width: 768px) {
+  .hero-camera-viewport {
+    height: 100dvh;
+    perspective: 1000px;
+  }
+
   .camera-hud-layer {
-    padding: 1.25rem;
+    padding: 1rem;
+    inset: 0;
+    pointer-events: none;
   }
 
   .hud-callout {
-    max-width: 90vw;
-    padding: 1rem 1.25rem;
-    left: 5% !important;
-    right: 5% !important;
+    width: min(88vw, 340px);
+    max-width: 340px;
+    padding: 0.9rem 1.1rem;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) translateY(20px);
     border-left: 3px solid var(--color-primary) !important;
+    border-radius: 14px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.9), 0 0 20px rgba(57, 255, 20, 0.12);
   }
 
+  /* Stages 1, 2, 4 (Display, Payment, Shaker): Callout sits at bottom */
   .hud-callout.display-callout,
   .hud-callout.payment-callout,
-  .hud-callout.dispenser-callout,
   .hud-callout.shaker-callout {
-    top: auto;
-    bottom: 12%;
+    top: auto !important;
+    bottom: 6% !important;
+  }
+
+  /* Stage 3 (Dispenser bay): Callout sits at top so bay below is unblocked */
+  .hud-callout.dispenser-callout {
+    top: 10% !important;
+    bottom: auto !important;
   }
 
   .hud-title {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
+    line-height: 1.2;
   }
 
   .hud-desc {
-    font-size: 0.8rem;
-    max-width: 100%;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    margin-top: 0.3rem;
   }
 
   .machine-graphic {
-    max-height: 60vh;
+    max-height: 46vh;
+    max-width: 78vw;
   }
 
   .shaker-graphic {
-    max-height: 55vh;
+    max-height: 42vh;
+    max-width: 72vw;
+  }
+
+  .ambient-neon-glow {
+    width: 80vw;
+    height: 50vh;
+    filter: blur(45px);
+  }
+}
+
+@media (max-width: 480px) {
+  .hud-callout {
+    width: calc(100vw - 2rem);
+    padding: 0.9rem 1.1rem;
+  }
+
+  .hud-title {
+    font-size: 1.05rem;
+  }
+
+  .hud-desc {
+    font-size: 0.78rem;
+  }
+
+  .machine-graphic {
+    max-height: 48vh;
+  }
+
+  .shaker-graphic {
+    max-height: 44vh;
   }
 }

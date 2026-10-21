@@ -1,4 +1,3 @@
-import React from 'react';
 import shakerImg from '../assets/shaker.png';
 
 const CupScene = () => {

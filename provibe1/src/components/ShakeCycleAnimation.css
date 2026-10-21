@@ -1,0 +1,793 @@
+/* ========================================================
+   SHAKE CYCLE ANIMATION (STICKMAN KIOSK SIMULATOR)
+   ======================================================== */
+
+.shake-cycle-container {
+  width: 100%;
+  margin: 2.5rem 0 2rem 0;
+  position: relative;
+}
+
+@media (max-width: 640px) {
+  .shake-cycle-container {
+    margin: 1.25rem 0 1.75rem 0;
+  }
+}
+
+.cycle-header {
+  margin-bottom: 2rem;
+}
+
+.cycle-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.cycle-title {
+  font-size: clamp(1.4rem, 3.2vw, 2.2rem);
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.cycle-subtitle {
+  font-size: 0.95rem;
+  color: #9ca3af;
+  max-width: 32rem;
+  margin: 0 auto;
+}
+
+/* ========================================================
+   ANIMATION STAGE BOX
+   ======================================================== */
+.animation-stage-box {
+  position: relative;
+  width: 100%;
+  height: 440px;
+  background: radial-gradient(circle at 80% 50%, rgba(57, 255, 20, 0.08) 0%, transparent 65%),
+              linear-gradient(180deg, #090c0a 0%, #060807 100%);
+  border: 1px solid rgba(57, 255, 20, 0.2);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: flex-end;
+}
+
+/* Ambient glow */
+.kiosk-glow-ambient {
+  position: absolute;
+  right: 10%;
+  top: 25%;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(57, 255, 20, 0.18) 0%, transparent 70%);
+  filter: blur(50px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Floor Line */
+.stage-floor-line {
+  position: absolute;
+  bottom: 85px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 5%, rgba(57, 255, 20, 0.3) 25%, rgba(57, 255, 20, 0.8) 75%, transparent 95%);
+  z-index: 2;
+}
+
+.floor-glow-core {
+  position: absolute;
+  top: -2px;
+  left: 20%;
+  right: 10%;
+  height: 6px;
+  background: rgba(57, 255, 20, 0.25);
+  filter: blur(4px);
+}
+
+/* ========================================================
+   STICKMAN ACTOR
+   ======================================================== */
+.stickman-actor {
+  position: absolute;
+  bottom: 83px;
+  width: 80px;
+  height: 150px;
+  z-index: 10;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.stickman-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transition: transform 0.3s ease;
+}
+
+.stickman-svg.flipped {
+  transform: scaleX(-1);
+}
+
+.stick-part {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 6px rgba(57, 255, 20, 0.6));
+}
+
+.stick-head {
+  fill: var(--color-primary);
+  stroke: none;
+}
+
+.stick-phone-prop {
+  fill: #60a5fa;
+  stroke: #ffffff;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 8px #60a5fa);
+  animation: phone-screen-flash 0.8s infinite alternate;
+}
+
+@keyframes phone-screen-flash {
+  0% { fill: #38bdf8; }
+  100% { fill: #a855f7; }
+}
+
+.held-cup-prop {
+  animation: cup-bounce 0.6s infinite alternate ease-in-out;
+}
+
+@keyframes cup-bounce {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
+}
+
+/* Walking gait keyframes */
+.stickman-actor.walking .stick-leg-left {
+  animation: leg-swing-left 0.6s infinite ease-in-out alternate;
+  transform-origin: 50px 105px;
+}
+
+.stickman-actor.walking .stick-leg-right {
+  animation: leg-swing-right 0.6s infinite ease-in-out alternate;
+  transform-origin: 50px 105px;
+}
+
+.stickman-actor.walking .stick-arm-left {
+  animation: arm-swing 0.6s infinite ease-in-out alternate;
+  transform-origin: 50px 48px;
+}
+
+.stickman-actor.walking-away .stick-leg-left {
+  animation: leg-swing-left 0.6s infinite ease-in-out alternate;
+  transform-origin: 50px 105px;
+}
+
+.stickman-actor.walking-away .stick-leg-right {
+  animation: leg-swing-right 0.6s infinite ease-in-out alternate;
+  transform-origin: 50px 105px;
+}
+
+@keyframes leg-swing-left {
+  0% { transform: rotate(-18deg); }
+  100% { transform: rotate(18deg); }
+}
+
+@keyframes leg-swing-right {
+  0% { transform: rotate(18deg); }
+  100% { transform: rotate(-18deg); }
+}
+
+@keyframes arm-swing {
+  0% { transform: rotate(-15deg); }
+  100% { transform: rotate(15deg); }
+}
+
+.stickman-actor.tapping .stick-arm-right {
+  animation: arm-tap 0.8s infinite ease-in-out alternate;
+  transform-origin: 50px 48px;
+}
+
+@keyframes arm-tap {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(6px); }
+}
+
+/* ========================================================
+   KIOSK UNIT STYLING
+   ======================================================== */
+.kiosk-unit-frame {
+  position: absolute;
+  right: 12%;
+  bottom: 85px;
+  width: 140px;
+  height: 270px;
+  background: #111512;
+  border: 2.5px solid var(--color-primary);
+  border-radius: 20px;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 0 25px rgba(57, 255, 20, 0.35), inset 0 0 15px rgba(57, 255, 20, 0.1);
+  z-index: 5;
+}
+
+/* Screen Panel */
+.kiosk-screen-panel {
+  width: 100%;
+  height: 80px;
+  background: #060907;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.kiosk-screen-panel.screen-active {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 12px rgba(57, 255, 20, 0.3);
+}
+
+.screen-text {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.75px;
+  color: var(--color-primary);
+}
+
+.screen-text.pulse {
+  animation: pulse-screen 1.2s infinite alternate;
+}
+
+@keyframes pulse-screen {
+  0% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+.screen-flavors-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.mini-badge {
+  font-size: 0.58rem;
+  font-weight: 800;
+  color: #fff;
+  background: rgba(57, 255, 20, 0.25);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.mini-bar {
+  width: 40px;
+  height: 3px;
+  background: var(--color-primary);
+  border-radius: 2px;
+}
+
+.screen-upi-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.mini-qr-box {
+  width: 28px;
+  height: 28px;
+  background: repeating-conic-gradient(#fff 0% 25%, #000 0% 50%) 50% / 7px 7px;
+  border: 1px solid #fff;
+}
+
+.screen-upi-qr span {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.screen-progress {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.screen-progress-label {
+  font-size: 0.56rem;
+  font-weight: 700;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.screen-progress-bar {
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.screen-progress-fill {
+  width: 100%;
+  height: 100%;
+  background: var(--color-primary);
+  animation: progress-fill 4s linear infinite;
+}
+
+@keyframes progress-fill {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+.screen-ready {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.screen-ready span {
+  font-size: 0.58rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* Center UPI Scanner */
+.kiosk-center-module {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.upi-scanner-circle {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  transition: all 0.3s ease;
+}
+
+.upi-scanner-circle.active-upi-glow {
+  background: rgba(57, 255, 20, 0.18);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: 0 0 15px var(--color-primary);
+}
+
+.upi-radar-ring {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-primary);
+  animation: radar-expand 1.2s infinite ease-out;
+}
+
+@keyframes radar-expand {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* 3 Process Indicators */
+.kiosk-process-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.process-indicator-bubble {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  transition: all 0.25s ease;
+}
+
+.process-indicator-bubble.active-water-glow {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: #38bdf8;
+  color: #38bdf8;
+  box-shadow: 0 0 10px #38bdf8;
+  animation: water-pulse 0.8s infinite alternate;
+}
+
+.process-indicator-bubble.active-powder-glow {
+  background: rgba(250, 204, 21, 0.2);
+  border-color: #facc15;
+  color: #facc15;
+  box-shadow: 0 0 10px #facc15;
+  animation: powder-shake 0.4s infinite alternate;
+}
+
+.process-indicator-bubble.active-vortex-glow {
+  background: rgba(57, 255, 20, 0.2);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: 0 0 12px var(--color-primary);
+}
+
+.process-indicator-bubble.rotating {
+  animation: vortex-spin 0.4s infinite linear;
+}
+
+@keyframes vortex-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes water-pulse {
+  0% { transform: scale(0.95); }
+  100% { transform: scale(1.1); }
+}
+
+@keyframes powder-shake {
+  0% { transform: rotate(-8deg); }
+  100% { transform: rotate(8deg); }
+}
+
+/* Dispensing Bay */
+.kiosk-dispenser-bay {
+  width: 100%;
+  height: 52px;
+  background: #070908;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.kiosk-dispenser-bay.bay-open {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 16px rgba(57, 255, 20, 0.45);
+  background: rgba(57, 255, 20, 0.08);
+}
+
+.dispenser-light-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--color-primary);
+  box-shadow: 0 0 8px var(--color-primary);
+  opacity: 0.6;
+}
+
+.cup-dispensed-graphic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cup-dispensed-graphic.cup-ready {
+  animation: cup-appear 0.4s ease-out forwards;
+}
+
+@keyframes cup-appear {
+  0% { transform: translateY(15px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.cup-body {
+  width: 18px;
+  height: 24px;
+  background: var(--color-primary);
+  clip-path: polygon(10% 100%, 90% 100%, 100% 0%, 0% 0%);
+  box-shadow: 0 0 8px rgba(57, 255, 20, 0.6);
+}
+
+.cup-cap {
+  width: 22px;
+  height: 5px;
+  background: #ffffff;
+  border-radius: 2px;
+}
+
+/* ========================================================
+   BOTTOM CAPTION DISPLAY
+   ======================================================== */
+.cycle-caption-wrapper {
+  position: absolute;
+  bottom: 18px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+  padding: 0 1rem;
+}
+
+.cycle-caption-text {
+  font-family: var(--font-primary);
+  font-size: clamp(1.1rem, 2.2vw, 1.45rem);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--color-primary);
+  text-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
+  margin-bottom: 0.2rem;
+  transition: all 0.3s ease;
+}
+
+.cycle-subtext {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+/* ========================================================
+   CONTROLS & TIMELINE BAR
+   ======================================================== */
+.cycle-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.cycle-ctrl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  padding: 0.5rem 0.95rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cycle-ctrl-btn:hover {
+  background: rgba(57, 255, 20, 0.12);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.cycle-steps-pills {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.step-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #111512;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #9ca3af;
+  padding: 0.45rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.step-pill-btn:hover {
+  color: #fff;
+  border-color: rgba(57, 255, 20, 0.3);
+}
+
+.step-pill-btn.active {
+  background: rgba(57, 255, 20, 0.15);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: 0 0 10px rgba(57, 255, 20, 0.25);
+}
+
+.step-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .cycle-header {
+    margin-bottom: 1.25rem;
+  }
+  .cycle-title {
+    font-size: clamp(1.25rem, 5vw, 1.8rem);
+  }
+  .cycle-subtitle {
+    font-size: 0.88rem;
+  }
+  .animation-stage-box {
+    height: 380px;
+  }
+  .kiosk-unit-frame {
+    right: 5%;
+    width: 115px;
+    height: 235px;
+  }
+  .stickman-actor {
+    width: 62px;
+    height: 125px;
+  }
+  .cycle-caption-text {
+    font-size: 1.1rem;
+  }
+  .cycle-subtext {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cycle-header {
+    margin-bottom: 1rem;
+  }
+  .cycle-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 1.5px;
+  }
+  .cycle-title {
+    font-size: 1.22rem;
+  }
+  .cycle-subtitle {
+    font-size: 0.82rem;
+  }
+  .animation-stage-box {
+    height: 310px;
+    border-radius: 12px;
+  }
+  .stage-floor-line {
+    bottom: 58px;
+  }
+  .stickman-actor {
+    bottom: 56px;
+    width: 48px;
+    height: 100px;
+  }
+  .stick-part {
+    stroke-width: 4.5;
+  }
+  .kiosk-unit-frame {
+    right: 4%;
+    bottom: 58px;
+    width: 95px;
+    height: 198px;
+    padding: 7px 5px;
+    border-radius: 12px;
+    border-width: 2px;
+  }
+  .kiosk-screen-panel {
+    height: 56px;
+    border-radius: 6px;
+    padding: 3px;
+  }
+  .screen-text {
+    font-size: 0.52rem;
+    letter-spacing: 0.4px;
+  }
+  .mini-badge {
+    font-size: 0.5rem;
+    padding: 1px 4px;
+  }
+  .mini-bar {
+    width: 28px;
+    height: 2px;
+  }
+  .mini-qr-box {
+    width: 20px;
+    height: 20px;
+  }
+  .screen-upi-qr span {
+    font-size: 0.52rem;
+  }
+  .screen-progress-label {
+    font-size: 0.48rem;
+  }
+  .screen-progress-bar {
+    height: 4px;
+  }
+  .screen-ready span {
+    font-size: 0.52rem;
+  }
+  .upi-scanner-circle {
+    width: 28px;
+    height: 28px;
+  }
+  .kiosk-process-indicators {
+    gap: 4px;
+    margin: 2px 0;
+  }
+  .process-indicator-bubble {
+    width: 22px;
+    height: 22px;
+  }
+  .kiosk-dispenser-bay {
+    height: 36px;
+    border-radius: 6px;
+  }
+  .cup-body {
+    width: 14px;
+    height: 18px;
+  }
+  .cup-cap {
+    width: 17px;
+    height: 4px;
+  }
+  .cycle-caption-wrapper {
+    bottom: 8px;
+    padding: 0 0.5rem;
+  }
+  .cycle-caption-text {
+    font-size: 0.92rem;
+    margin-bottom: 0.12rem;
+  }
+  .cycle-subtext {
+    font-size: 0.74rem;
+    line-height: 1.35;
+  }
+  .cycle-controls-bar {
+    gap: 0.4rem;
+    margin-top: 0.85rem;
+  }
+  .cycle-ctrl-btn {
+    padding: 0.38rem 0.65rem;
+    font-size: 0.68rem;
+  }
+  .cycle-steps-pills {
+    gap: 0.35rem;
+  }
+  .step-pill-btn {
+    padding: 0.32rem 0.55rem;
+    font-size: 0.66rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .animation-stage-box {
+    height: 310px;
+  }
+  .kiosk-unit-frame {
+    width: 90px;
+    height: 190px;
+  }
+  .stickman-actor {
+    width: 46px;
+    height: 98px;
+  }
+}
