@@ -148,10 +148,10 @@ const ShakeCycleAnimation = () => {
                 stage.stickmanAction === 'tapping'
                   ? 'M 50 48 L 78 45 L 105 42'
                   : stage.stickmanAction === 'paying'
-                  ? 'M 50 48 L 75 58 L 92 65'
-                  : stage.stickmanAction === 'grabbing'
-                  ? 'M 50 48 L 75 105 L 95 135'
-                  : 'M 50 48 L 68 74 L 80 95'
+                    ? 'M 50 48 L 75 58 L 92 65'
+                    : stage.stickmanAction === 'grabbing'
+                      ? 'M 50 48 L 75 105 L 95 135'
+                      : 'M 50 48 L 68 74 L 80 95'
               }
               className="stick-part stick-arm-right"
             />
@@ -189,7 +189,7 @@ const ShakeCycleAnimation = () => {
             {/* Held Shaker Cup when walking away */}
             {stage.hasCup && (
               <g className="held-cup-prop">
-                <rect x="18" y="80" width="12" height="22" rx="3" fill="#39ff14" />
+                <rect x="18" y="80" width="12" height="22" rx="3" fill="#E5FF52" />
                 <rect x="16" y="77" width="16" height="4" rx="2" fill="#ffffff" />
               </g>
             )}
@@ -243,9 +243,8 @@ const ShakeCycleAnimation = () => {
           <div className="kiosk-process-indicators">
             {/* Water Dosing Icon */}
             <div
-              className={`process-indicator-bubble ${
-                stage.activeIcon === 'mixing' ? 'active-water-glow' : ''
-              }`}
+              className={`process-indicator-bubble ${stage.activeIcon === 'mixing' ? 'active-water-glow' : ''
+                }`}
               title="Chilled Water Injection"
             >
               <Droplets size={16} />
@@ -253,9 +252,8 @@ const ShakeCycleAnimation = () => {
 
             {/* Powder Scoop Icon */}
             <div
-              className={`process-indicator-bubble ${
-                stage.activeIcon === 'mixing' ? 'active-powder-glow' : ''
-              }`}
+              className={`process-indicator-bubble ${stage.activeIcon === 'mixing' ? 'active-powder-glow' : ''
+                }`}
               title="Gram-Accurate Protein Dosing"
             >
               <Utensils size={15} />
@@ -263,9 +261,8 @@ const ShakeCycleAnimation = () => {
 
             {/* Vortex Mixing Icon */}
             <div
-              className={`process-indicator-bubble ${
-                stage.activeIcon === 'mixing' ? 'active-vortex-glow rotating' : ''
-              }`}
+              className={`process-indicator-bubble ${stage.activeIcon === 'mixing' ? 'active-vortex-glow rotating' : ''
+                }`}
               title="12,000 RPM Cyclone Vortex"
             >
               <RotateCw size={16} />

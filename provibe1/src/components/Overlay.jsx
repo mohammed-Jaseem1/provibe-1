@@ -205,11 +205,11 @@ const Overlay = () => {
   const faqData = [
     {
       q: "What is a smart sports nutrition vending machine?",
-      a: "A ProVibe smart protein vending machine is an automated, self-service kiosk that freshly prepares and cold-dispenses high-grade protein shakes on demand. Equipped with 6 dedicated supplement slots, instant 4°C chilling, and UPI QR payment, it serves a fresh, clump-free protein shake in just 50 seconds."
+      a: "A ProVibe smart kiosk is an automated, self-service dispenser that freshly prepares and cold-dispenses Whey Protein, Mass Gainer, Micronised Creatine, and Pre-Workout on demand. Equipped with 6 dedicated supplement slots, instant 4°C chilling, and UPI QR payment, it serves a fresh, lump-free drink in just 50 seconds."
     },
     {
       q: "Where can I find or install a ProVibe vending machine?",
-      a: "ProVibe vending machines are installed across gyms, fitness studios, tech parks, and sports facilities in Bengaluru and Kerala, with nationwide expansion underway. If you are a gym owner or facility manager, contact us to schedule a site inspection and machine installation."
+      a: "ProVibe smart kiosks are launching across premier gyms, fitness studios, and sports facilities in Kerala, with nationwide expansion across India underway. If you are a gym owner or facility manager, contact us to schedule a free site inspection and zero-cost machine installation."
     },
     {
       q: "Does the gym invest anything, and what is the profit share?",
@@ -234,7 +234,7 @@ const Overlay = () => {
     },
     {
       q: "What warranty and technical support is provided?",
-      a: "Every ProVibe kiosk comes with 24/7 cloud telemetry, proactive ingredient restocking alerts, and a 1-year comprehensive hardware warranty backed by our on-ground technical support team."
+      a: "Every ProVibe kiosk comes with 24/7 smart stock tracking, automatic refill alerts, and complete hardware maintenance handled entirely by our on-ground technical support team - at zero cost to the gym."
     }
   ];
 
@@ -854,7 +854,7 @@ const Overlay = () => {
             <span className="section-eyebrow text-primary">COMMON INQUIRIES</span>
             <h2>FREQUENTLY ASKED <span className="text-primary">QUESTIONS.</span></h2>
             <p className="max-w-2xl mx-auto mt-4">
-              Everything you need to know about ProVibe smart protein vending machines, installations, and nutrition.
+              Everything you need to know about ProVibe smart sports nutrition kiosks, zero-cost gym installations, and our 6-slot supplement lineup.
             </p>
           </div>
 

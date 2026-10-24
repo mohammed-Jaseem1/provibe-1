@@ -43,7 +43,7 @@
 
 .about-card:hover {
   transform: translateY(-5px);
-  border-color: rgba(57, 255, 20, 0.2);
+  border-color: rgba(229, 255, 82, 0.2);
 }
 
 .about-card h3 {

@@ -2,7 +2,7 @@ import shakerImg from '../assets/shaker.png';
 
 const CupScene = () => {
   return (
-    <div 
+    <div
       style={{
         position: 'absolute',
         top: 0,
@@ -16,15 +16,15 @@ const CupScene = () => {
         justifyContent: 'center'
       }}
     >
-      <img 
-        src={shakerImg} 
-        alt="ProVibe Shaker" 
+      <img
+        src={shakerImg}
+        alt="ProVibe Shaker"
         style={{
           width: 'auto',
           height: '70vh',
           maxWidth: '80vw',
           objectFit: 'contain',
-          filter: 'drop-shadow(0 25px 30px rgba(57, 255, 20, 0.2))', // Neon green shadow
+          filter: 'drop-shadow(0 25px 30px rgba(229, 255, 82, 0.2))', // Neon green shadow
           transform: 'translate(25vw, 10vh) scale(1.2) rotate(15deg)' // Fixed starting position
         }}
       />
